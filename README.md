@@ -4,6 +4,8 @@ Description
 -----------
 
 Based on [FireBase](https://www.firebase.com/), implements chat room without backend. Folloing the __Material design__. And next step might be Media/File transfer with dropbox/google drive.
+
+Plan
 ----
 
 Based on our experiences on web development and descriptions metioned above, we take _Feb, 2016_ as the __1st stage__ with the __primary__ goal of __prototyping__ our own Android App.
