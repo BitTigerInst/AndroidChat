@@ -2,5 +2,7 @@
 <resources>
 
     <string name="app_name">Firebase Chat</string>
+    <string name="dialog_username">Type Your Name :</string>
+    <string name="change_username">Change Username</string>
 
 </resources>

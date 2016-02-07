@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/change_user"
+        android:id="@+id/change_username"
+        android:title="@string/change_username"
+        app:showAsAction="always"/>
+
+</menu>

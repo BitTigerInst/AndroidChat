@@ -16,6 +16,14 @@ import com.firebase.client.Query;
  */
 public class ChatListAdapter extends FirebaseListAdapter<Chat> {
 
+    public String getmUsername() {
+        return mUsername;
+    }
+
+    public void setmUsername(String mUsername) {
+        this.mUsername = mUsername;
+    }
+
     // The mUsername for this client. We use this to indicate which messages originated from this user
     private String mUsername;
 
