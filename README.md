@@ -1,23 +1,31 @@
-# Firebase Chat for Android
+# AraChat
 
-A simple chat application that built with Firebase on Android.
+Description
+-----------
 
-![Screenshot](screenshot.png)
+Based on [FireBase](https://www.firebase.com/), implements chat room without backend. Folloing the __Material design__. And next step might be Media/File transfer with dropbox/google drive.
+----
 
-## Setup
+Based on our experiences on web development and descriptions metioned above, we take _Feb, 2016_ as the __1st stage__ with the __primary__ goal of __prototyping__ our own Android App.
 
-Update [`MainActivity`](/app/src/main/java/com/firebase/androidchat/MainActivity.java) and replace
-`https://android-chat.firebaseio-demo.com` with a reference to your Firebase.
+* __[2016/02/01 - 2016/02/07]__ Plan Discussion, and Proposal Draft Writing
+* __[2016/02/08 - 2016/02/24]__ System Design, Resource Discovery, Project Implementation, Document Writing 
+* __[2016/02/25 - 2016/02/29]__ User Manual Writing and Video Presentation Making
 
-## What's here
+_Details of each schedule and task will be added later._
 
-This application's
-[`FirebaseListAdapter`](/app/src/main/java/com/firebase/androidchat/FirebaseListAdapter.java)
-demonstrates binding Firebase to an Android
-[ListView](https://developer.android.com/guide/topics/ui/layout/listview.html).
-Firebase keeps the list data up to date based on a mapping to a model class.
+Resource
+--------
 
-## More about Firebase on Android
+1. __[Firebase Website]__ https://www.firebase.com/
+2. __[Material Design]__ https://www.google.com/design/spec/material-design/introduction.html
 
-You can do lots more with Firebase on Android. Check out our Android
-[Quickstart guide](https://www.firebase.com/docs/java-quickstart.html) to learn more.
+Language & Framework
+--------------------
+
++ Java, Android SDK, Firebase
+
+Owner
+-----
+
+@team: MonkeyBOOM
