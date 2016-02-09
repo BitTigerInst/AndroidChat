@@ -1,13 +1,12 @@
-package com.firebase.androidchat;
+package com.firebase.androidchat.activity;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,20 +18,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.androidchat.ChatApplication;
+import com.firebase.androidchat.bean.Chat;
+import com.firebase.androidchat.ChatListAdapter;
+import com.firebase.androidchat.R;
+import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
-import java.util.Random;
-
 public class MainActivity extends AppCompatActivity {
 
     // TODO: change this to your own Firebase URL
-    private static final String FIREBASE_URL = "https://sizzling-torch-9176.firebaseio.com/";
+
 
     private String mUsername;
-    private Firebase mFirebaseRef;
+    private Firebase mFirebase,mFirebaseChat;
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
 
@@ -40,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Make sure we have a mUsername
         setupUsername();
 
         setTitle("Chatting as " + mUsername);
 
-        // Setup our Firebase mFirebaseRef
-        mFirebaseRef = new Firebase(FIREBASE_URL).child("chat");
+        // Setup our Firebase mFirebaseChat
+        mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
+        mFirebaseChat = mFirebase.child("chat");
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -81,11 +83,20 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.change_username:
-                userNameAlertDialog();
+                userLoginAlertDialog();
+                return true;
+            case R.id.logout:
+                backToLogin();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void backToLogin() {
+        Intent intent = new Intent(getApplication(),LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -94,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = (ListView) findViewById(R.id.listview);
         // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limit(50), this, R.layout.chat_message, mUsername);
+        mChatListAdapter = new ChatListAdapter(mFirebaseChat.limit(50), this, R.layout.chat_message, mUsername);
         listView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -105,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Finally, a little indication of connection status
-        mConnectedListener = mFirebaseRef.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        mConnectedListener = mFirebaseChat.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
@@ -126,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        mFirebaseRef.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+        mFirebaseChat.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
         mChatListAdapter.cleanup();
     }
 
@@ -134,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
         mUsername = prefs.getString("username", null);
         if (mUsername == null) {
-            userNameAlertDialog();
+            userLoginAlertDialog();
         }
     }
 
-    private void userNameAlertDialog(){
+    private void userLoginAlertDialog(){
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.username_alert_dialog, null);
 
@@ -148,7 +159,12 @@ public class MainActivity extends AppCompatActivity {
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
-        final EditText userInput = (EditText) promptsView
+        final EditText userName = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+        if(mUsername != null)
+            userName.setText(mUsername);
+
+        final EditText userPassword = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
 
         // set dialog message
@@ -156,20 +172,41 @@ public class MainActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, int id) {
+
+                            }
+                        })
+                .setNegativeButton("Exit",
+                        new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
-                                prefs.edit().putString("username", userInput.getText().toString()).commit();
-                                mUsername = prefs.getString("username", null);
-                                setTitle("Chatting as " + mUsername);
-                                mChatListAdapter.setmUsername(mUsername);
+                                backToLogin();
                             }
                         });
 
         // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        final AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
         alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = userName.getText().toString();
+                String password = userPassword.getText().toString();
+                mFirebase.authWithPassword(username, password, new Firebase.AuthResultHandler() {
+                    @Override
+                    public void onAuthenticated(AuthData authData) {
+                        System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                        alertDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onAuthenticationError(FirebaseError firebaseError) {
+                        Toast.makeText(getBaseContext(), "User not exist or password wrong.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
     }
 
@@ -180,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             // Create our 'model', a Chat object
             Chat chat = new Chat(input, mUsername);
             // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseRef.push().setValue(chat);
+            mFirebaseChat.push().setValue(chat);
             inputText.setText("");
         }
     }

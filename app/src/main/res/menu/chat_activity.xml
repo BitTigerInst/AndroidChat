@@ -10,4 +10,10 @@
         android:title="@string/change_username"
         app:showAsAction="always"/>
 
+    <item
+        android:icon="@drawable/btn_logout"
+        android:id="@+id/logout"
+        android:title="@string/change_username"
+        app:showAsAction="always"/>
+
 </menu>
