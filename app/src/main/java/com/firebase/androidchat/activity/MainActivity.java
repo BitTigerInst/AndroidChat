@@ -7,26 +7,17 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.firebase.androidchat.ChatApplication;
-import com.firebase.androidchat.bean.Chat;
-import com.firebase.androidchat.ChatListAdapter;
 import com.firebase.androidchat.R;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.androidchat.adapter.ChatListAdapter;
+import com.firebase.androidchat.bean.Chat;
+import com.firebase.client.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,9 +25,27 @@ public class MainActivity extends AppCompatActivity {
 
 
     private String mUsername;
-    private Firebase mFirebase,mFirebaseChat;
+    private Firebase mFirebase;
+    private Firebase mFirebaseChat;
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
+
+    public void setmFirebaseChat(Firebase mFirebaseChat) {
+        this.mFirebaseChat = mFirebaseChat;
+    }
+
+    public void setmChatListAdapter(final ChatListAdapter mChatListAdapter) {
+        this.mChatListAdapter = mChatListAdapter;
+        final ListView listView = (ListView) findViewById(R.id.listview);
+        listView.setAdapter(mChatListAdapter);
+        mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                listView.setSelection(mChatListAdapter.getCount() - 1);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup our Firebase mFirebaseChat
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
-        mFirebaseChat = mFirebase.child("chat");
+        mFirebaseChat = mFirebase.child("chat").child(mUsername.replace(".",","));
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -116,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Finally, a little indication of connection status
-        mConnectedListener = mFirebaseChat.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+        mConnectedListener = mFirebase.getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
