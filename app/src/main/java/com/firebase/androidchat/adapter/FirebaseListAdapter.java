@@ -1,4 +1,4 @@
-package com.firebase.androidchat;
+package com.firebase.androidchat.adapter;
 
 import android.app.Activity;
 import android.util.Log;
@@ -13,9 +13,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author greg

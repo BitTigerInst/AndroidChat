@@ -6,11 +6,6 @@ package com.firebase.androidchat.bean;
  */
 public class User {
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    private String userId;
     private String email;
     private String password;
 
