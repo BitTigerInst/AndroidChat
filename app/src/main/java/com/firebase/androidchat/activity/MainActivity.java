@@ -7,26 +7,17 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.firebase.androidchat.ChatApplication;
-import com.firebase.androidchat.bean.Chat;
-import com.firebase.androidchat.adapter.ChatListAdapter;
 import com.firebase.androidchat.R;
-import com.firebase.client.AuthData;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.androidchat.adapter.ChatListAdapter;
+import com.firebase.androidchat.bean.Chat;
+import com.firebase.client.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,13 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
     private String mUsername;
     private Firebase mFirebase;
+    private Firebase mFirebaseChat;
+    private ValueEventListener mConnectedListener;
+    private ChatListAdapter mChatListAdapter;
 
     public void setmFirebaseChat(Firebase mFirebaseChat) {
         this.mFirebaseChat = mFirebaseChat;
     }
-
-    private Firebase mFirebaseChat;
-    private ValueEventListener mConnectedListener;
 
     public void setmChatListAdapter(final ChatListAdapter mChatListAdapter) {
         this.mChatListAdapter = mChatListAdapter;
@@ -55,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private ChatListAdapter mChatListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

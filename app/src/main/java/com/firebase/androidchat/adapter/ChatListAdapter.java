@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.activity.MainActivity;
@@ -24,14 +22,6 @@ import com.firebase.client.Query;
  */
 public class ChatListAdapter extends FirebaseListAdapter<Chat> {
 
-    public String getmUsername() {
-        return mUsername;
-    }
-
-    public void setmUsername(String mUsername) {
-        this.mUsername = mUsername;
-    }
-
     // The mUsername for this client. We use this to indicate which messages originated from this user
     private String mUsername;
     private MainActivity activity;
@@ -40,6 +30,14 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
         super(ref, Chat.class, layout, activity);
         this.mUsername = mUsername;
         this.activity = (MainActivity) activity;
+    }
+
+    public String getmUsername() {
+        return mUsername;
+    }
+
+    public void setmUsername(String mUsername) {
+        this.mUsername = mUsername;
     }
 
     /**
