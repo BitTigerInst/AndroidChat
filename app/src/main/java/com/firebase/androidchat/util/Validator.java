@@ -26,7 +26,9 @@ public class Validator {
     public static Validator getInstance() {
         if (null == instance) {
             synchronized (Validator.class) {
-                instance = new Validator();
+                if (null == instance) {
+                    instance = new Validator();
+                }
             }
         }
         return instance;
