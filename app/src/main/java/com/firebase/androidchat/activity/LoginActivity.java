@@ -32,7 +32,8 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
-    private static Validator mValidator = new Validator();
+    private static Validator mValidator = Validator.getInstance();
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -126,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
         mFirebase.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                Log.v(LOG_TAG, "User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 prefs.edit().putString("username", email).apply();
@@ -150,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         mFirebase.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                System.out.println("Successfully created user account with uid: " + result.get("uid"));
+                Log.v(LOG_TAG, "Successfully created user account with uid: " + result.get("uid"));
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 prefs.edit().putString("username", email).apply();
