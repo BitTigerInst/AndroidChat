@@ -32,7 +32,8 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
-    private static Validator mValidator = new Validator();
+    private static Validator mValidator = Validator.getInstance();
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;

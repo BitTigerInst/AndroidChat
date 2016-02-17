@@ -1,5 +1,7 @@
 package com.firebase.androidchat.util;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,22 @@ public class Validator {
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
             Pattern.CASE_INSENSITIVE
     );
+    private static volatile Validator instance;
+
+    private Validator() {
+    }
+
+    @Contract(pure = true)
+    public static Validator getInstance() {
+        if (null == instance) {
+            synchronized (Validator.class) {
+                if (null == instance) {
+                    instance = new Validator();
+                }
+            }
+        }
+        return instance;
+    }
 
     public void checkEmail(String email) {
         if (null == email || email.length() < 1) {
@@ -27,7 +45,7 @@ public class Validator {
     }
 
     public void checkPassword(String password) {
-        if (password == null ||
+        if (null == password ||
                 password.length() < PASSWORD_MIN_LENGTH) {
             throw new ShortPasswordException();
         }
