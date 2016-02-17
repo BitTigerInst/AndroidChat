@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Firebase Chat</string>
-    <string name="dialog_username">Type Your Name :</string>
+    <string name="app_name">MonkeyBOOM Chat</string>
+    <string name="dialog_username">Join or Create channel :</string>
     <string name="change_username">Change Username</string>
     <string name="title_activity_login">Sign in</string>
 

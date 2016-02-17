@@ -37,7 +37,7 @@ import java.util.Map;
 public class ChannelActivity extends AppCompatActivity {
 
     // TODO: change this to your own Firebase URL
-
+    private final static String DEFAULT_CHANNEL = "Welcome to MonkeyBOOM Channel!";
 
     private String mUsername;
     private Firebase mFirebase;
@@ -129,10 +129,10 @@ public class ChannelActivity extends AppCompatActivity {
                                 loginToChannel(channelName.getText().toString());
                             }
                         })
-                .setNegativeButton("Exit",
+                .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                backToLogin();
+
                             }
                         });
 
@@ -293,8 +293,11 @@ public class ChannelActivity extends AppCompatActivity {
                 GenericTypeIndicator<HashMap<String,Channel>> t = new GenericTypeIndicator<HashMap<String, Channel>>() {
                 };
                 HashMap<String,Channel> map = snapshot.getValue(t);
-                if(map == null)
+                if(map == null){
+                    Channel channel = new Channel(DEFAULT_CHANNEL);
+                    mFirebaseUser.push().setValue(channel);
                     return;
+                }
                 for (Channel c: map.values()){
                     channelList.add(c.getName());
                 }

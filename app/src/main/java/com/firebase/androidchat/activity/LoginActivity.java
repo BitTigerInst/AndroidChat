@@ -132,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 prefs.edit().putString("username", email).apply();
                 startActivity(intent);
+                mPasswordView.setText("");
                 showProgress(false);
             }
 
@@ -156,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 prefs.edit().putString("username", email).apply();
                 startActivity(intent);
+                mPasswordView.setText("");
                 showProgress(false);
             }
 
