@@ -293,6 +293,8 @@ public class ChannelActivity extends AppCompatActivity {
                 GenericTypeIndicator<HashMap<String,Channel>> t = new GenericTypeIndicator<HashMap<String, Channel>>() {
                 };
                 HashMap<String,Channel> map = snapshot.getValue(t);
+                if(map == null)
+                    return;
                 for (Channel c: map.values()){
                     channelList.add(c.getName());
                 }
