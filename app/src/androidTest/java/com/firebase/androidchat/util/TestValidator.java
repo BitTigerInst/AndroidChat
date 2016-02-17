@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TestValidator extends AndroidTestCase {
 
-    private static Validator mValidator = new Validator();
+    private static Validator mValidator = Validator.getInstance();
 
     @Test(expected = Validator.EmptyEmailException.class)
     public void testEmptyEmail() {

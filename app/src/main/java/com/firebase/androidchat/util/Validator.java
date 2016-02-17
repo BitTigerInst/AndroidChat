@@ -1,7 +1,5 @@
 package com.firebase.androidchat.util;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +20,6 @@ public class Validator {
     private Validator() {
     }
 
-    @Contract(pure = true)
     public static Validator getInstance() {
         if (null == instance) {
             synchronized (Validator.class) {
