@@ -1,8 +1,8 @@
 package com.firebase.androidchat.bean;
 
 /**
- * @author greg
- * @since 6/21/13
+ * @author Long
+ * @since 2/10/16
  */
 public class Chat {
 

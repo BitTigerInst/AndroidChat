@@ -7,77 +7,77 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.*;
-import android.view.inputmethod.EditorInfo;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
-import com.firebase.androidchat.adapter.ChatListAdapter;
-import com.firebase.androidchat.bean.Chat;
-import com.firebase.client.*;
+import com.firebase.androidchat.adapter.ChannelListAdapter;
+import com.firebase.androidchat.bean.Channel;
+import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
+import com.firebase.client.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ChannelActivity extends AppCompatActivity {
 
     // TODO: change this to your own Firebase URL
 
 
     private String mUsername;
     private Firebase mFirebase;
-    private Firebase mFirebaseChat;
-    private ValueEventListener mConnectedListener;
-    private ChatListAdapter mChatListAdapter;
+    private ArrayList<String> channelList;
 
-    public void setmFirebaseChat(Firebase mFirebaseChat) {
-        this.mFirebaseChat = mFirebaseChat;
+    public void setmFirebaseUser(Firebase mFirebaseUser) {
+        this.mFirebaseUser = mFirebaseUser;
     }
 
-    public void setmChatListAdapter(final ChatListAdapter mChatListAdapter) {
-        this.mChatListAdapter = mChatListAdapter;
+    private Firebase mFirebaseUser;
+    private ValueEventListener mConnectedListener;
+
+    public void setmChannelListAdapter(final ChannelListAdapter mChannelListAdapter) {
+        this.mChannelListAdapter = mChannelListAdapter;
         final ListView listView = (ListView) findViewById(R.id.listview);
-        listView.setAdapter(mChatListAdapter);
-        mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
+        listView.setAdapter(mChannelListAdapter);
+        mChannelListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                listView.setSelection(mChatListAdapter.getCount() - 1);
+                listView.setSelection(mChannelListAdapter.getCount() - 1);
             }
         });
     }
 
+    private ChannelListAdapter mChannelListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_channel);
         // Make sure we have a mUsername
         setupUsername();
 
         setTitle("Chatting as " + mUsername);
 
-        // Setup our Firebase mFirebaseChat
+        // Setup our Firebase mFirebaseUser
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
-        mFirebaseChat = mFirebase.child("chat").child(mUsername.replace(".",","));
-
-        // Setup our input methods. Enter key on the keyboard or pushing the send button
-        EditText inputText = (EditText) findViewById(R.id.messageInput);
-        inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    sendMessage();
-                }
-                return true;
-            }
-        });
-
-        findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendMessage();
-            }
-        });
+        mFirebaseUser = mFirebase.child("user").child(mUsername.replace(".",","));
+        getChannelList();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.change_username:
-                userLoginAlertDialog();
+                createChannel();
                 return true;
             case R.id.logout:
                 backToLogin();
@@ -100,6 +100,54 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void createChannel() {
+        LayoutInflater li = LayoutInflater.from(this);
+        View promptsView = li.inflate(R.layout.username_alert_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText channelName = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+
+        final EditText userPassword = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserPassword);
+        userPassword.setVisibility(View.GONE);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, int id) {
+                                setChannel(channelName.getText().toString());
+                                loginToChannel(channelName.getText().toString());
+                            }
+                        })
+                .setNegativeButton("Exit",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                backToLogin();
+                            }
+                        });
+
+        // create alert dialog
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+    public void loginToChannel(String channelName) {
+        Intent intent = new Intent(getApplication(), ChatActivity.class);
+        SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
+        prefs.edit().putString("channel", channelName).apply();
+        startActivity(intent);
     }
 
     private void backToLogin() {
@@ -114,13 +162,20 @@ public class MainActivity extends AppCompatActivity {
         // Setup our view and list adapter. Ensure it scrolls to the bottom as data changes
         final ListView listView = (ListView) findViewById(R.id.listview);
         // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseChat.limit(50), this, R.layout.chat_message, mUsername);
-        listView.setAdapter(mChatListAdapter);
-        mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
+        mChannelListAdapter = new ChannelListAdapter(mFirebaseUser.limit(50), this, R.layout.channel_list);
+        listView.setAdapter(mChannelListAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView channelText = (TextView) view.findViewById(R.id.name);
+                loginToChannel(channelText.getText().toString());
+            }
+        });
+        mChannelListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
                 super.onChanged();
-                listView.setSelection(mChatListAdapter.getCount() - 1);
+                listView.setSelection(mChannelListAdapter.getCount() - 1);
             }
         });
 
@@ -130,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
-                    Toast.makeText(MainActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChannelActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChannelActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -146,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        mFirebaseChat.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
-        mChatListAdapter.cleanup();
+        mFirebaseUser.getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+        mChannelListAdapter.cleanup();
     }
 
     private void setupUsername() {
@@ -219,15 +274,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage() {
-        EditText inputText = (EditText) findViewById(R.id.messageInput);
-        String input = inputText.getText().toString();
+    private void setChannel(String input) {
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUsername);
-            // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseChat.push().setValue(chat);
-            inputText.setText("");
+            if(channelList.indexOf(input) == -1) {
+                Channel channel = new Channel(input);
+                // Create a new, auto-generated child of that chat location, and save our chat data there
+                mFirebaseUser.push().setValue(channel);
+            }
         }
+    }
+
+    private void getChannelList(){
+        channelList = new ArrayList<>();
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                GenericTypeIndicator<HashMap<String,Channel>> t = new GenericTypeIndicator<HashMap<String, Channel>>() {
+                };
+                HashMap<String,Channel> map = snapshot.getValue(t);
+                for (Channel c: map.values()){
+                    channelList.add(c.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
     }
 }
