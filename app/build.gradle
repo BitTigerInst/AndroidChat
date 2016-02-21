@@ -1,15 +1,29 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'LongJiaoKeyStone'
+            keyPassword 'jiaolong'
+            storeFile file('/Users/longjiao/long.jks')
+            storePassword 'jiaolong'
+        }
+    }
+    defaultConfig {
+        multiDexEnabled true
+        versionCode 0
+        versionName '0.01'
+        minSdkVersion 17
+        targetSdkVersion 23
+        signingConfig signingConfigs.config
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
-
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         applicationId "com.firebase.androidchat"
@@ -20,9 +34,12 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable true
         }
+    }
+    productFlavors {
     }
 }
 
@@ -30,13 +47,13 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-
-    compile fileTree(dir: 'lib', include: ['*.jar'])
-    compile 'com.firebase:firebase-client-android:2.5.0+'
+    compile fileTree(include: ['*.jar'], dir: 'lib')
+    compile 'com.firebase:firebase-client-android:2.5.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'org.androidannotations:androidannotations-api:3.2'
     compile 'com.android.support:design:23.1.1'
     compile 'org.slf4j:slf4j-simple:1.7.16'
-
+    compile 'com.firebase:geofire:1.1.1'
+    compile 'com.google.android.gms:play-services:8.4.0'
 }

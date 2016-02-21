@@ -16,8 +16,13 @@ import android.widget.Toast;
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChatListAdapter;
+import com.firebase.androidchat.bean.Channel;
 import com.firebase.androidchat.bean.Chat;
+import com.firebase.androidchat.bean.User;
 import com.firebase.client.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -30,6 +35,8 @@ public class ChatActivity extends AppCompatActivity {
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
     private String mUserName;
+    private ArrayList<String> userList;
+    private Firebase mFirebaseUser;
 
     public void setmFirebaseChat(Firebase mFirebaseChat) {
         this.mFirebaseChat = mFirebaseChat;
@@ -61,7 +68,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // Setup our Firebase mFirebaseChat
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
-        mFirebaseChat = mFirebase.child("channel").child(mChannelName.replace(".", ","));
+        mFirebaseChat = mFirebase.child("channel").child(mChannelName.replace(".", ",")).child("chat");
+        mFirebaseUser = mFirebase.child("channel").child(mChannelName.replace(".", ",")).child("user");
+        getUserList();
 
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
@@ -86,7 +95,10 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.chat_activity, menu);
+        getMenuInflater().inflate(R.menu.chat_activity, menu);
+        MenuItem map = menu.getItem(0);
+        map.setIcon(R.drawable.map);
+
         return true;
     }
 
@@ -95,7 +107,8 @@ public class ChatActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.change_username:
-                userLoginAlertDialog();
+                Intent intent = new Intent(ChatActivity.this, MapsActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.logout:
                 backToLogin();
@@ -233,6 +246,30 @@ public class ChatActivity extends AppCompatActivity {
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mFirebaseChat.push().setValue(chat);
             inputText.setText("");
+            if(!userList.contains(mUserName)){
+                mFirebaseUser.push().setValue(new User(mUserName));
+            }
         }
+    }
+
+    private void getUserList(){
+        userList = new ArrayList<>();
+        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                GenericTypeIndicator<HashMap<String, User>> t = new GenericTypeIndicator<HashMap<String, User>>() {
+                };
+                HashMap<String, User> map = snapshot.getValue(t);
+                if(map == null)
+                    return;
+                for (User u : map.values()) {
+                    userList.add(u.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
     }
 }

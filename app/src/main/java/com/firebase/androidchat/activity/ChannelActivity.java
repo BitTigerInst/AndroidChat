@@ -21,6 +21,7 @@ import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChannelListAdapter;
 import com.firebase.androidchat.bean.Channel;
+import com.firebase.androidchat.bean.User;
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -28,6 +29,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.firebase.geofire.GeoFire;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +78,7 @@ public class ChannelActivity extends AppCompatActivity {
 
         // Setup our Firebase mFirebaseUser
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
-        mFirebaseUser = mFirebase.child("user").child(mUsername.replace(".",","));
+        mFirebaseUser = mFirebase.child("user").child(mUsername.replace(".",",")).child("channel");
         getChannelList();
     }
 
