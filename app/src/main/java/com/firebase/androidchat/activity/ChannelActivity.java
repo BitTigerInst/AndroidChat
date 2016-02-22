@@ -11,30 +11,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChannelListAdapter;
 import com.firebase.androidchat.bean.Channel;
-import com.firebase.androidchat.bean.User;
-import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.GenericTypeIndicator;
-import com.firebase.client.ValueEventListener;
-import com.firebase.geofire.GeoFire;
+import com.firebase.client.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ChannelActivity extends AppCompatActivity {
 
@@ -44,13 +29,13 @@ public class ChannelActivity extends AppCompatActivity {
     private String mUsername;
     private Firebase mFirebase;
     private ArrayList<String> channelList;
+    private Firebase mFirebaseUser;
+    private ValueEventListener mConnectedListener;
+    private ChannelListAdapter mChannelListAdapter;
 
     public void setmFirebaseUser(Firebase mFirebaseUser) {
         this.mFirebaseUser = mFirebaseUser;
     }
-
-    private Firebase mFirebaseUser;
-    private ValueEventListener mConnectedListener;
 
     public void setmChannelListAdapter(final ChannelListAdapter mChannelListAdapter) {
         this.mChannelListAdapter = mChannelListAdapter;
@@ -64,8 +49,6 @@ public class ChannelActivity extends AppCompatActivity {
             }
         });
     }
-
-    private ChannelListAdapter mChannelListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,19 +68,15 @@ public class ChannelActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.chat_activity, menu);
+        getMenuInflater().inflate(R.menu.channel_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.change_username:
+            case R.id.add_channel:
                 createChannel();
-                return true;
-            case R.id.logout:
-                backToLogin();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

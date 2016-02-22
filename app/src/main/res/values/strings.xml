@@ -20,5 +20,8 @@
         completions."
     </string>
     <string name="title_activity_maps">Map</string>
+    <string name="action_add_channel">Add Channel</string>
+    <string name="action_show_members">Show Members</string>
+    <string name="action_map_location">Map Location</string>
 
 </resources>

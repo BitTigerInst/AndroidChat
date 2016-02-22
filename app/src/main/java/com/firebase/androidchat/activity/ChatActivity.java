@@ -9,14 +9,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChatListAdapter;
-import com.firebase.androidchat.bean.Channel;
 import com.firebase.androidchat.bean.Chat;
 import com.firebase.androidchat.bean.User;
 import com.firebase.client.*;
@@ -95,18 +91,17 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.chat_activity, menu);
-        MenuItem map = menu.getItem(0);
-        map.setIcon(R.drawable.map);
-
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.change_username:
+            case R.id.action_show_members:
+                showMembers();
+                return true;
+            case R.id.action_map_location:
                 Intent intent = new Intent(ChatActivity.this, MapsActivity.class);
                 startActivity(intent);
                 return true;
@@ -119,7 +114,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void backToLogin() {
-        Intent intent = new Intent(getApplication(),LoginActivity.class);
+        Intent intent = new Intent(getApplication(), LoginActivity.class);
         startActivity(intent);
         finish();
     }
@@ -271,5 +266,31 @@ public class ChatActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+    }
+
+    private void showMembers() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
+        builderSingle.setIcon(R.drawable.ic_action_channel_members);
+        builderSingle.setTitle(mChannelName);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.select_dialog_item);
+        arrayAdapter.addAll(userList);
+        builderSingle.setNegativeButton(
+                "cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        builderSingle.setAdapter(
+                arrayAdapter,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: next consider what to do when user clicks certain user
+                    }
+                });
+        builderSingle.show();
     }
 }

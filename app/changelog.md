@@ -1,4 +1,14 @@
+## Version 0.1.2
 
+<li>
+        Map, use geofire get location on map
+        -Long
+</li>
+
+<li>
+        Show Channel Members in chat activity
+        -Hongzhang
+<li>
 
 
 ## Version 0.1.1 Hongzhang
