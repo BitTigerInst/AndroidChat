@@ -1,45 +1,46 @@
 apply plugin: 'com.android.application'
 
 android {
+
     signingConfigs {
         config {
-            keyAlias 'LongJiaoKeyStone'
-            keyPassword 'jiaolong'
-            storeFile file('/Users/longjiao/long.jks')
-            storePassword 'jiaolong'
+            keyAlias SigningConfigsConfigKeyAlias
+            keyPassword SigningConfigsConfigKeyPassword
+            storeFile file(SigningConfigsConfigStoreFile)
+            storePassword SigningConfigsConfigStorePassword
         }
     }
+
     defaultConfig {
-        multiDexEnabled true
-        versionCode 0
-        versionName '0.01'
+        applicationId "com.firebase.androidchat.activity"
         minSdkVersion 17
         targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         signingConfig signingConfigs.config
     }
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
+
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
-    defaultConfig {
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        applicationId "com.firebase.androidchat"
-        minSdkVersion 17
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
+
     buildTypes {
+        debug {
+            resValue "string", "google_maps_key", GoogleMapsDebugKey
+        }
         release {
+            resValue "string", "google_maps_key", GoogleMapsReleaseKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
         }
-    }
-    productFlavors {
     }
 }
 
