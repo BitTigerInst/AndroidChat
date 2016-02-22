@@ -5,6 +5,17 @@ Description
 
 Based on [FireBase](https://www.firebase.com/), implements chat room without backend. Folloing the __Material design__. And next step might be Media/File transfer with dropbox/google drive.
 
+Build
+----
+
+To build the project, add the following items in gradle.properties:
+SigningConfigsConfigKeyAlias
+SigningConfigsConfigKeyPassword
+SigningConfigsConfigStoreFile
+SigningConfigsConfigStorePassword
+GoogleMapsDebugKey
+GoogleMapsReleaseKey
+
 Plan
 ----
 
