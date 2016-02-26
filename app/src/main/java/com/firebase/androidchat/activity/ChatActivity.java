@@ -13,6 +13,7 @@ import android.widget.*;
 import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChatListAdapter;
+import com.firebase.androidchat.adapter.CheckboxAdapter;
 import com.firebase.androidchat.bean.Chat;
 import com.firebase.androidchat.bean.User;
 import com.firebase.client.*;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
+    private static final String[] STATE = {"Normal","Baned","Mute"};
 
     // TODO: change this to your own Firebase URL
 
@@ -31,8 +33,9 @@ public class ChatActivity extends AppCompatActivity {
     private ValueEventListener mConnectedListener;
     private ChatListAdapter mChatListAdapter;
     private String mUserName;
-    private ArrayList<String> userList;
+    private ArrayList<User> userList;
     private Firebase mFirebaseUser;
+    private boolean isAdmin, isNewUser;
 
     public void setmFirebaseChat(Firebase mFirebaseChat) {
         this.mFirebaseChat = mFirebaseChat;
@@ -68,6 +71,42 @@ public class ChatActivity extends AppCompatActivity {
         mFirebaseUser = mFirebase.child("channel").child(mChannelName.replace(".", ",")).child("user");
         getUserList();
 
+        // Setup listener for current state
+//        mFirebaseUser.addChildEventListener(new ChildEventListener() {
+//            // Retrieve new posts as they are added to the database
+//            @Override
+//            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+//                if (!snapshot.exists()) { // if no value exist
+//                    User user = new User(mUserName);
+//                    mFirebaseUser.child(mUserName.replace(".", ",")).setValue(user);
+//                }
+//                if (snapshot.getKey().equalsIgnoreCase("level") && (Long) snapshot.getValue() == 1)
+//                    isAdmin = true;
+//                if (snapshot.getKey().equalsIgnoreCase("state") && (Long) snapshot.getValue() == 1)
+//                    closeAndMessage();
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//                if (dataSnapshot.getKey().equalsIgnoreCase("state") && (Long) dataSnapshot.getValue() == 1)
+//                    closeAndMessage();
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(FirebaseError firebaseError) {
+//
+//            }
+//        });
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -86,6 +125,11 @@ public class ChatActivity extends AppCompatActivity {
                 sendMessage();
             }
         });
+    }
+
+    private void closeAndMessage() {
+        Toast.makeText(this,"You have been baned by the admin",Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
@@ -141,9 +185,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
-                    Toast.makeText(ChatActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(ChatActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ChatActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(ChatActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -152,6 +196,12 @@ public class ChatActivity extends AppCompatActivity {
                 // No-op
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+//        if(!userList.contains(mUserName)){
     }
 
     @Override
@@ -241,29 +291,67 @@ public class ChatActivity extends AppCompatActivity {
             // Create a new, auto-generated child of that chat location, and save our chat data there
             mFirebaseChat.push().setValue(chat);
             inputText.setText("");
-            if(!userList.contains(mUserName)){
-                mFirebaseUser.push().setValue(new User(mUserName));
+            if(userList.size()==0){
+                User user = new User(mUserName);
+                user.setLevel(1);
+                mFirebaseUser.child(mUserName.replace(".",",")).setValue(user);
+            }else if(isNewUser){
+                User user = new User(mUserName);
+                mFirebaseUser.child(mUserName.replace(".",",")).setValue(user);
             }
         }
     }
 
     private void getUserList(){
         userList = new ArrayList<>();
-        mFirebaseUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        isNewUser = true;
+        mFirebaseUser.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                GenericTypeIndicator<HashMap<String, User>> t = new GenericTypeIndicator<HashMap<String, User>>() {
-                };
-                HashMap<String, User> map = snapshot.getValue(t);
-                if(map == null)
-                    return;
-                for (User u : map.values()) {
-                    userList.add(u.getName());
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                GenericTypeIndicator<HashMap<String, User>> t = new GenericTypeIndicator<HashMap<String, User>>() {
+//                };
+//                HashMap<String, User> map = dataSnapshot.getValue(t);
+//                if (map == null)
+//                    return;
+//                for (User u : map.values()) {
+//                    userList.add(u);
+//                }
+                User user = dataSnapshot.getValue(User.class);
+                userList.add(user);
+                if(user.getName().equalsIgnoreCase(mUserName)) {
+                    isNewUser = false;
+                    if (user.getLevel() == 1)
+                        isAdmin = true;
+                    if (user.getState() == 1)
+                        closeAndMessage();
                 }
             }
 
             @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                GenericTypeIndicator<HashMap<String, User>> t = new GenericTypeIndicator<HashMap<String, User>>() {
+                };
+                HashMap<String, User> map = dataSnapshot.getValue(t);
+                if (map == null)
+                    return;
+                for (User u : map.values()) {
+                    userList.remove(u);
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
             public void onCancelled(FirebaseError firebaseError) {
+//                System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
     }
@@ -272,25 +360,47 @@ public class ChatActivity extends AppCompatActivity {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
         builderSingle.setIcon(R.drawable.ic_action_channel_members);
         builderSingle.setTitle(mChannelName);
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.select_dialog_item);
-        arrayAdapter.addAll(userList);
+        ArrayList<String> userNameList = new ArrayList<>();
+        for(User u: userList){
+            userNameList.add(u.getName());
+        }
+        final ArrayAdapter<User> arrayAdapter =
+//                new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,userList);
+                new CheckboxAdapter(this,userList,mChannelName,isAdmin);
         builderSingle.setNegativeButton(
-                "cancel",
+                "Close",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                });
+                })
+//                .setPositiveButton(
+//                "Kick",
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                })
+        ;
         builderSingle.setAdapter(
-                arrayAdapter,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO: next consider what to do when user clicks certain user
-                    }
-                });
+                arrayAdapter
+                , null
+//                new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // TODO: next consider what to do when user clicks certain user
+//                        if (!isAdmin)
+//                            return;
+//                        final String username = userList.get(which).getName().replace(".", ",");
+//                        mFirebaseUser.child(username).child("state").setValue(1);
+//                        Toast.makeText(ChatActivity.this, "You kicked out user " + username, Toast.LENGTH_SHORT).show();
+//                        User user = userList.get(which);
+//                        Toast.makeText(ChatActivity.this, "Username "+user.getName()+ " state "+STATE[user.getState()],Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+        );
         builderSingle.show();
     }
 }
