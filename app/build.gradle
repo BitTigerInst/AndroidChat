@@ -4,10 +4,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias 'LongJiaoKeyStone'
-            keyPassword 'jiaolong'
-            storeFile file('/Users/longjiao/long.jks')
-            storePassword 'jiaolong'
+            keyAlias SigningConfigsConfigKeyAlias
+            keyPassword SigningConfigsConfigKeyPassword
+            storeFile file(SigningConfigsConfigStoreFile)
+            storePassword SigningConfigsConfigStorePassword
         }
     }
 
@@ -33,10 +33,10 @@ android {
 
     buildTypes {
         debug {
-            resValue "string", "google_maps_key", ""
+            resValue "string", "google_maps_key", GoogleMapsDebugKey
         }
         release {
-            resValue "string", "google_maps_key", "AIzaSyBa8vuHG89X45XYSX-iOF1fzBfW9OLbmvs"
+            resValue "string", "google_maps_key", GoogleMapsReleaseKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
