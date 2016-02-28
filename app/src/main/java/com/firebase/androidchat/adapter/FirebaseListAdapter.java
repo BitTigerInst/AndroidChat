@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
@@ -170,6 +171,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         // Call out to subclass to marshall this model into the provided view
         populateView(view, model);
         return view;
+    }
+
+    protected Firebase getFirebaseRef(){
+        return (Firebase)mRef;
     }
 
     /**

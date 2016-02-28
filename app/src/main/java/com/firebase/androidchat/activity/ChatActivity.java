@@ -14,6 +14,7 @@ import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChatListAdapter;
 import com.firebase.androidchat.adapter.CheckboxAdapter;
+import com.firebase.androidchat.adapter.ToDoItemListAdapter;
 import com.firebase.androidchat.bean.Chat;
 import com.firebase.androidchat.bean.User;
 import com.firebase.client.*;
@@ -21,8 +22,14 @@ import com.firebase.client.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import drawing.BoardListActivity;
+import io.agora.sample.agora.AgoraChannelActivity;
+
 public class ChatActivity extends AppCompatActivity {
     private static final String[] STATE = {"Normal","Baned","Mute"};
+    public static final String EXTRA_NEW_NAME = "new_name";
+    public static final String EXTRA_HAS_CHANGED = "has_changed";
+    private static final String EXTRA_CHANNEL_FIREBASE_URL = "EXTRA_CHANNEL_FIREBASE_URL";
 
     // TODO: change this to your own Firebase URL
 
@@ -151,6 +158,21 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
             case R.id.logout:
                 backToLogin();
+                return true;
+            case R.id.action_draw:
+                Intent i = new Intent(ChatActivity.this, BoardListActivity.class);
+                startActivity(i);
+                return true;
+            case R.id.action_video:
+                Intent toChannel = new Intent(ChatActivity.this, AgoraChannelActivity.class);
+                toChannel.putExtra(AgoraChannelActivity.EXTRA_TYPE, AgoraChannelActivity.CALLING_TYPE_VIDEO);
+                toChannel.putExtra(AgoraChannelActivity.EXTRA_CHANNEL, mChannelName);
+                startActivity(toChannel);
+                return true;
+            case R.id.action_todo_list:
+                Intent toTodoList = new Intent(ChatActivity.this, ToDoListActivity.class);
+                toTodoList.putExtra(EXTRA_CHANNEL_FIREBASE_URL, mFirebase.child("channel").child(mChannelName.replace(".", ",")).toString());
+                startActivity(toTodoList);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -329,7 +351,11 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                User user = dataSnapshot.getValue(User.class);
+                if(user.getName().equalsIgnoreCase(mUserName)) {
+                    if (user.getState() == 1)
+                        closeAndMessage();
+                }
             }
 
             @Override

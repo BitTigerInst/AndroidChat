@@ -16,15 +16,16 @@ import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChannelListAdapter;
 import com.firebase.androidchat.bean.Channel;
+import com.firebase.androidchat.util.Validator;
 import com.firebase.client.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChannelActivity extends AppCompatActivity {
-
+    private static Validator mValidator = Validator.getInstance();
     // TODO: change this to your own Firebase URL
-    private final static String DEFAULT_CHANNEL = "Welcome to MonkeyBOOM Channel!";
+    private final static String DEFAULT_CHANNEL = "MonkeyBOOM";
 
     private String mUsername;
     private Firebase mFirebase;
@@ -106,8 +107,12 @@ public class ChannelActivity extends AppCompatActivity {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, int id) {
-                                setChannel(channelName.getText().toString());
-                                loginToChannel(channelName.getText().toString());
+//                                if (mValidator.checkUrl(channelName.getText().toString())) {
+                                    setChannel(channelName.getText().toString());
+                                    loginToChannel(channelName.getText().toString());
+//                                } else {
+//                                    Toast.makeText(ChannelActivity.this,"Channel name should onln contain 0-9 a-Z and '_' ",Toast.LENGTH_SHORT).show();
+//                                }
                             }
                         })
                 .setNegativeButton("Cancel",

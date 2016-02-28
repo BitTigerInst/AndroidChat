@@ -5,10 +5,19 @@
             android:id="@+id/action_show_members"
             android:title="@string/action_show_members"
             app:showAsAction="ifRoom"/>
-    <item
-            android:icon="@drawable/map"
+    <group android:id="@+id/group_functions">
+        <item
             android:id="@+id/action_map_location"
-            android:title="@string/action_map_location"
-            app:showAsAction="ifRoom"/>
+            android:title="@string/action_map_location"/>
+        <item
+            android:id="@+id/action_draw"
+            android:title="@string/action_Drawing"/>
+        <item
+            android:id="@+id/action_todo_list"
+            android:title="@string/action_todo_list"/>
+        <item
+            android:id="@+id/action_video"
+            android:title="@string/action_video_chat"/>
+    </group>
 
 </menu>

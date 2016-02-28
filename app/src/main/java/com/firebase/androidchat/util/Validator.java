@@ -15,6 +15,10 @@ public class Validator {
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
             Pattern.CASE_INSENSITIVE
     );
+    private static final Pattern URL_PATTERN = Pattern.compile(
+            "^[0-9a-zA-Z_]+$",
+            Pattern.CASE_INSENSITIVE
+    );
     private static volatile Validator instance;
 
     private Validator() {
@@ -46,6 +50,17 @@ public class Validator {
                 password.length() < PASSWORD_MIN_LENGTH) {
             throw new ShortPasswordException();
         }
+    }
+
+    public boolean checkUrl(String url) {
+        if (null == url || url.length() < 1) {
+            return false;
+        }
+        Matcher matcher = EMAIL_PATTERN.matcher(url);
+        if (!matcher.find()) {
+            return false;
+        }
+        return true;
     }
 
     public class EmptyEmailException extends RuntimeException {

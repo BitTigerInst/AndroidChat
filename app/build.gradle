@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "com.firebase.androidchat"
         minSdkVersion 17
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -42,12 +42,19 @@ android {
             debuggable true
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['lib']
+        }
+    }
 }
 
 dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
+    compile fileTree(include: ['*.jar'], dir: 'lib')
     compile fileTree(include: ['*.jar'], dir: 'lib')
     compile 'com.firebase:firebase-client-android:2.5.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
@@ -57,4 +64,5 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.16'
     compile 'com.firebase:geofire:1.1.1'
     compile 'com.google.android.gms:play-services:8.4.0'
+    compile files('lib/crasheye.jar')
 }
