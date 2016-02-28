@@ -20,19 +20,30 @@ public class ToDoItemListAdapter extends FirebaseListAdapter<ToDoItem> {
     }
 
     @Override
-    public void populateView(View view, ToDoItem toDoItem){
+    public void populateView(View view, final ToDoItem toDoItem){
 
 
         TextView descriptionTextView = (TextView)view.findViewById(R.id.todoItemDescriptionTextView);
         TextView dateTextView = (TextView)view.findViewById(R.id.todoItemDateTextView);
         CheckBox doneCheckBox = (CheckBox)view.findViewById(R.id.todoItemCheckBox);
 
-        Firebase todoFirebase = getFirebaseRef();
-
-
         descriptionTextView.setText(toDoItem.getDescription());
         dateTextView.setText(toDoItem.getTimestamp().toString());
         doneCheckBox.setChecked(toDoItem.isCompleted());
+        doneCheckBox.setTag(toDoItem);
+        doneCheckBox.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox box = (CheckBox) v;
+                Firebase todoFirebase = getFirebaseRef();
+                if(box.isChecked()){
+                    toDoItem.setCompleted(true);
+                }else {
+                    toDoItem.setCompleted(false);
+                }
+                todoFirebase.child(toDoItem.getKey()).setValue(toDoItem);
+            }
+        });
     }
 
     public void addToDo(ToDoItem toDoItem){
