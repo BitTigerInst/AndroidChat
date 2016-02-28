@@ -131,9 +131,11 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplication(), ChannelActivity.class);
                 SharedPreferences prefs = getApplication().getSharedPreferences("ChatPrefs", 0);
                 prefs.edit().putString("username", email).apply();
+                prefs.edit().putBoolean("login", true).apply();
                 startActivity(intent);
                 mPasswordView.setText("");
                 showProgress(false);
+                finish();
             }
 
             @Override
@@ -159,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 mPasswordView.setText("");
                 showProgress(false);
+                finish();
             }
 
             @Override
