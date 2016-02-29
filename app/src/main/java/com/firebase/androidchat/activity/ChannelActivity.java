@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChannelActivity extends AppCompatActivity {
+
+    public static final String LOG_TAG = ChannelActivity.class.getSimpleName();
+
     // TODO: change this to your own Firebase URL
     private final static String DEFAULT_CHANNEL = "MonkeyBOOM";
     private static Validator mValidator = Validator.getInstance();
@@ -175,6 +179,7 @@ public class ChannelActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean connected = (Boolean) dataSnapshot.getValue();
                 if (connected) {
+                    Log.d(LOG_TAG, "Connected to Firebase");
 //                    Toast.makeText(ChannelActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
                 } else {
 //                    Toast.makeText(ChannelActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
