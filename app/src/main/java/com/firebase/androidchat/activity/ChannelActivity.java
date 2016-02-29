@@ -23,10 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChannelActivity extends AppCompatActivity {
-    private static Validator mValidator = Validator.getInstance();
     // TODO: change this to your own Firebase URL
     private final static String DEFAULT_CHANNEL = "MonkeyBOOM";
-
+    private static Validator mValidator = Validator.getInstance();
     private String mUsername;
     private Firebase mFirebase;
     private ArrayList<String> channelList;
@@ -78,6 +77,9 @@ public class ChannelActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add_channel:
                 createChannel();
+                return true;
+            case R.id.logout:
+                backToLogin();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,6 +139,8 @@ public class ChannelActivity extends AppCompatActivity {
     }
 
     private void backToLogin() {
+        SharedPreferences prefs = getSharedPreferences("ChatPrefs", 0);
+        prefs.edit().clear().commit();
         Intent intent = new Intent(getApplication(),LoginActivity.class);
         startActivity(intent);
         finish();

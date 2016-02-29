@@ -11,10 +11,9 @@
             app:showAsAction="always"/>
 
     <item
-        android:icon="@drawable/btn_logout"
-        android:id="@+id/logout"
-        android:title="@string/change_username"
-        android:visible="false"
-        app:showAsAction="always"/>
+            android:icon="@drawable/btn_logout"
+            android:id="@+id/logout"
+            android:title="@string/logout"
+            app:showAsAction="always"/>
 
 </menu>
