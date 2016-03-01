@@ -14,25 +14,22 @@ import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChatListAdapter;
 import com.firebase.androidchat.adapter.CheckboxAdapter;
-import com.firebase.androidchat.adapter.ToDoItemListAdapter;
 import com.firebase.androidchat.bean.Chat;
 import com.firebase.androidchat.bean.User;
 import com.firebase.client.*;
+import drawing.BoardListActivity;
+import dropbox.DropboxActivity;
+import dropbox.UserActivity;
+import io.agora.sample.agora.AgoraChannelActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import drawing.BoardListActivity;
-import io.agora.sample.agora.AgoraChannelActivity;
-
 public class ChatActivity extends AppCompatActivity {
-    private static final String[] STATE = {"Normal","Baned","Mute"};
     public static final String EXTRA_NEW_NAME = "new_name";
     public static final String EXTRA_HAS_CHANGED = "has_changed";
+    private static final String[] STATE = {"Normal","Baned","Mute"};
     private static final String EXTRA_CHANNEL_FIREBASE_URL = "EXTRA_CHANNEL_FIREBASE_URL";
-
-    // TODO: change this to your own Firebase URL
-
 
     private String mChannelName;
     private Firebase mFirebase;
@@ -43,6 +40,8 @@ public class ChatActivity extends AppCompatActivity {
     private ArrayList<User> userList;
     private Firebase mFirebaseUser;
     private boolean isAdmin, isNewUser;
+
+    private EditText inputText;
 
     public void setmFirebaseChat(Firebase mFirebaseChat) {
         this.mFirebaseChat = mFirebaseChat;
@@ -71,6 +70,8 @@ public class ChatActivity extends AppCompatActivity {
         setupUsername();
 
         setTitle("Chatting in " + mChannelName);
+
+        inputText = (EditText) findViewById(R.id.messageInput);
 
         // Setup our Firebase mFirebaseChat
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
@@ -174,6 +175,9 @@ public class ChatActivity extends AppCompatActivity {
                 toTodoList.putExtra(EXTRA_CHANNEL_FIREBASE_URL, mFirebase.child("channel").child(mChannelName.replace(".", ",")).toString());
                 startActivity(toTodoList);
                 return true;
+            case R.id.action_share_file:
+                Intent shareFile = new Intent(ChatActivity.this, UserActivity.class);
+                startActivityForResult(shareFile, DropboxActivity.CREATE_SHARED_LINK_REQUEST);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -305,7 +309,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        EditText inputText = (EditText) findViewById(R.id.messageInput);
         String input = inputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
@@ -330,14 +333,6 @@ public class ChatActivity extends AppCompatActivity {
         mFirebaseUser.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                GenericTypeIndicator<HashMap<String, User>> t = new GenericTypeIndicator<HashMap<String, User>>() {
-//                };
-//                HashMap<String, User> map = dataSnapshot.getValue(t);
-//                if (map == null)
-//                    return;
-//                for (User u : map.values()) {
-//                    userList.add(u);
-//                }
                 User user = dataSnapshot.getValue(User.class);
                 userList.add(user);
                 if(user.getName().equalsIgnoreCase(mUserName)) {
@@ -377,7 +372,6 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-//                System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
     }
@@ -391,7 +385,6 @@ public class ChatActivity extends AppCompatActivity {
             userNameList.add(u.getName());
         }
         final ArrayAdapter<User> arrayAdapter =
-//                new ArrayAdapter<String>(this,android.R.layout.select_dialog_item,userList);
                 new CheckboxAdapter(this,userList,mChannelName,isAdmin);
         builderSingle.setNegativeButton(
                 "Close",
@@ -401,32 +394,22 @@ public class ChatActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 })
-//                .setPositiveButton(
-//                "Kick",
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                })
         ;
         builderSingle.setAdapter(
                 arrayAdapter
                 , null
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // TODO: next consider what to do when user clicks certain user
-//                        if (!isAdmin)
-//                            return;
-//                        final String username = userList.get(which).getName().replace(".", ",");
-//                        mFirebaseUser.child(username).child("state").setValue(1);
-//                        Toast.makeText(ChatActivity.this, "You kicked out user " + username, Toast.LENGTH_SHORT).show();
-//                        User user = userList.get(which);
-//                        Toast.makeText(ChatActivity.this, "Username "+user.getName()+ " state "+STATE[user.getState()],Toast.LENGTH_SHORT).show();
-//                    }
-//                }
         );
         builderSingle.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST
+            // && resultCode == RESULT_OK
+                ) {
+            inputText.setText(data.getStringExtra("SharedLink"));
+            // sendMessage();
+            // TODO Need to figure out how to send the link which includes dots
+        }
     }
 }

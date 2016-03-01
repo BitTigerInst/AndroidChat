@@ -40,4 +40,13 @@
     <color name="light_white">#66FFFFFF</color>
     <color name="yellow">#FFDCB059</color>
     <color name="hint">#9F9F9F</color>
+
+    <color name="dbx_white_opaque_100">#FFFFFFFF</color>
+    <color name="dbx_primary">#FF007EE5</color>
+    <color name="dbx_primary_dark">#FF0078d9</color>
+    <color name="dbx_color_control_normal">@color/dbx_primary</color>
+    <color name="dbx_color_control_activated">@color/dbx_primary</color>
+    <color name="dbx_color_control_highlight">@color/dbx_primary_dark</color>
+    <color name="dbx_color_switch_thumbNormal">@color/dbx_primary</color>
+
 </resources>

@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+allprojects {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+}
+
 android {
 
     signingConfigs {
@@ -13,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId "com.firebase.androidchat"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -51,10 +58,11 @@ android {
 }
 
 dependencies {
+    compile group: 'com.dropbox.core', name: 'dropbox-core-sdk', version: '0-SNAPSHOT', changing: true
+
     androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-    compile fileTree(include: ['*.jar'], dir: 'lib')
     compile fileTree(include: ['*.jar'], dir: 'lib')
     compile 'com.firebase:firebase-client-android:2.5.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
@@ -64,5 +72,9 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.16'
     compile 'com.firebase:geofire:1.1.1'
     compile 'com.google.android.gms:play-services:8.4.0'
-    compile files('lib/crasheye.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.4'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.4'
 }
