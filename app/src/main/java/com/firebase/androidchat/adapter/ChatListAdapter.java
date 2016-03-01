@@ -71,8 +71,8 @@ public class ChatListAdapter extends FirebaseListAdapter<Chat> {
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(final DialogInterface dialog, int id) {
                                             Firebase newFirebase = new Firebase(ChatApplication.FIREBASE_URL).child("chat").child(author.replace(".",","));
-                                            activity.setmFirebaseChat(newFirebase);
-                                            activity.setmChatListAdapter(new ChatListAdapter(newFirebase.limit(50),activity, R.layout.chat_message, author));
+                                            activity.setFirebaseChat(newFirebase);
+                                            activity.setChatListAdapter(new ChatListAdapter(newFirebase.limit(50), activity, R.layout.chat_message, author));
                                         }
                                     })
                             .setNegativeButton("Cancel",

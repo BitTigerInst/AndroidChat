@@ -43,11 +43,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private EditText inputText;
 
-    public void setmFirebaseChat(Firebase mFirebaseChat) {
+    public void setFirebaseChat(Firebase mFirebaseChat) {
         this.mFirebaseChat = mFirebaseChat;
     }
 
-    public void setmChatListAdapter(final ChatListAdapter mChatListAdapter) {
+    public void setChatListAdapter(final ChatListAdapter mChatListAdapter) {
         this.mChatListAdapter = mChatListAdapter;
         final ListView listView = (ListView) findViewById(R.id.listview);
         listView.setAdapter(mChatListAdapter);
@@ -79,42 +79,6 @@ public class ChatActivity extends AppCompatActivity {
         mFirebaseUser = mFirebase.child("channel").child(mChannelName.replace(".", ",")).child("user");
         getUserList();
 
-        // Setup listener for current state
-//        mFirebaseUser.addChildEventListener(new ChildEventListener() {
-//            // Retrieve new posts as they are added to the database
-//            @Override
-//            public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-//                if (!snapshot.exists()) { // if no value exist
-//                    User user = new User(mUserName);
-//                    mFirebaseUser.child(mUserName.replace(".", ",")).setValue(user);
-//                }
-//                if (snapshot.getKey().equalsIgnoreCase("level") && (Long) snapshot.getValue() == 1)
-//                    isAdmin = true;
-//                if (snapshot.getKey().equalsIgnoreCase("state") && (Long) snapshot.getValue() == 1)
-//                    closeAndMessage();
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//                if (dataSnapshot.getKey().equalsIgnoreCase("state") && (Long) dataSnapshot.getValue() == 1)
-//                    closeAndMessage();
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//
-//            }
-//        });
         // Setup our input methods. Enter key on the keyboard or pushing the send button
         EditText inputText = (EditText) findViewById(R.id.messageInput);
         inputText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -404,12 +368,10 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST
-            // && resultCode == RESULT_OK
-                ) {
+        if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST) {
             inputText.setText(data.getStringExtra("SharedLink"));
             // sendMessage();
-            // TODO Need to figure out how to send the link which includes dots
         }
     }
+
 }
