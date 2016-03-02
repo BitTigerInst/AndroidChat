@@ -368,10 +368,12 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST) {
+        if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST
+                && null != data) {
             inputText.setText(data.getStringExtra("SharedLink"));
             // sendMessage();
         }
     }
+
 
 }

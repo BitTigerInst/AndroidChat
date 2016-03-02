@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 import com.dropbox.core.v2.files.FileMetadata;
@@ -98,14 +99,16 @@ public class FilesActivity extends DropboxActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // if(resultCode != RESULT_OK) return;
         switch (requestCode) {
             case PICK_FILE_REQUEST_CODE:
                 uploadFile(data.getData().toString());
                 break;
             case DropboxActivity.CREATE_SHARED_LINK_REQUEST:
-                setResult(DropboxActivity.CREATE_SHARED_LINK_REQUEST, data);
-                finish();
+                if (null != data) {
+                    setResult(DropboxActivity.CREATE_SHARED_LINK_REQUEST, data);
+                    finish();
+                }
+                break;
             default:
         }
     }
@@ -297,6 +300,16 @@ public class FilesActivity extends DropboxActivity {
                 action.getCode()
         );
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setResult(DropboxActivity.CREATE_SHARED_LINK_REQUEST, null);
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     private enum FileAction {
         SHARE,

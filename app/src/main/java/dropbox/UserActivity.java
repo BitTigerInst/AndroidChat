@@ -3,6 +3,7 @@ package dropbox;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -82,11 +83,20 @@ public class UserActivity extends DropboxActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DropboxActivity.CREATE_SHARED_LINK_REQUEST
-            // && resultCode == RESULT_OK
-                ) {
+                && null != data) {
             setResult(DropboxActivity.CREATE_SHARED_LINK_REQUEST, data);
             finish();
         }
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            setResult(DropboxActivity.CREATE_SHARED_LINK_REQUEST, null);
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
 }
