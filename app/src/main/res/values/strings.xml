@@ -97,7 +97,7 @@
     <string name="addTodo">Add</string>
     <string name="cancleTodoAdd">Cancel</string>
 
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">MonkeyBOOM Chat</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

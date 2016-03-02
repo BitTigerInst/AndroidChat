@@ -4,10 +4,10 @@ android {
 
     signingConfigs {
         config {
-            keyAlias SigningConfigsConfigKeyAlias
-            keyPassword SigningConfigsConfigKeyPassword
-            storeFile file(SigningConfigsConfigStoreFile)
-            storePassword SigningConfigsConfigStorePassword
+            keyAlias 'LongJiaoKeyStone'
+            keyPassword 'jiaolong'
+            storeFile file('/Users/longjiao/long.jks')
+            storePassword 'jiaolong'
         }
     }
 
@@ -33,10 +33,10 @@ android {
 
     buildTypes {
         debug {
-            resValue "string", "google_maps_key", GoogleMapsDebugKey
+            resValue "string", "google_maps_key", ""
         }
         release {
-            resValue "string", "google_maps_key", GoogleMapsReleaseKey
+            resValue "string", "google_maps_key", "AIzaSyBa8vuHG89X45XYSX-iOF1fzBfW9OLbmvs"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
@@ -54,7 +54,6 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-    compile fileTree(include: ['*.jar'], dir: 'lib')
     compile fileTree(include: ['*.jar'], dir: 'lib')
     compile 'com.firebase:firebase-client-android:2.5.0'
     compile 'com.android.support:appcompat-v7:23.1.1'
