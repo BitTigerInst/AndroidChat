@@ -30,6 +30,7 @@
     <string name="title_activity_board_list">BoardListActivity</string>
 
     <string name="action_new_board">New board</string>
+
     <string name="error">Vendor key updated, please login again.</string>
     <string name="error_101">Invalid vendor key, please login again.</string>
     <string name="error_confirm">Done</string>
@@ -97,7 +98,7 @@
     <string name="addTodo">Add</string>
     <string name="cancleTodoAdd">Cancel</string>
 
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">MonkeyBOOM Chat</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
