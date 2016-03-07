@@ -1,19 +1,17 @@
 package com.firebase.androidchat;
 
 import android.content.SharedPreferences;
-
-import io.agora.sample.agora.Model.MessageHandler;
-import io.agora.sample.agora.Model.Record;
-import io.agora.sample.agora.BaseEngineHandlerActivity;
 import com.firebase.client.Firebase;
 import com.xsj.crasheye.Crasheye;
+import drawing.SyncedBoardManager;
+import io.agora.rtc.RtcEngine;
+import io.agora.sample.agora.BaseEngineHandlerActivity;
+import io.agora.sample.agora.Model.MessageHandler;
+import io.agora.sample.agora.Model.Record;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import drawing.SyncedBoardManager;
-import io.agora.rtc.RtcEngine;
 
 /**
  * @author Jenny Tong (mimming)
@@ -23,29 +21,9 @@ import io.agora.rtc.RtcEngine;
  */
 public class ChatApplication extends android.app.Application {
     public static final String FIREBASE_URL = "https://sizzling-torch-9176.firebaseio.com/";
-    private RtcEngine rtcEngine;
-
-    private MessageHandler messageHandler;
-
-    private boolean isInChannel;
-    private int channelTime;
-
-    private ArrayList<Record> recordsList = new ArrayList<Record>();
-
-    private SharedPreferences user;
-    private SharedPreferences settings;
-    private SharedPreferences call;
-    private SharedPreferences record;
-
-    private SharedPreferences.Editor userEditor;
-    private SharedPreferences.Editor settingsEditor;
-    private SharedPreferences.Editor callEditor;
-    private SharedPreferences.Editor recordEditor;
-
     // Leancloud
     private final static String EXTRA_APP_KEY = "28JP7oxLHbCNi7ofL6YgywT0";
     private final static String EXTRA_MASTER_KEY = "aQpqEH0qmo0bGLaCzNlYkra3";
-
     private final static String EXTRA_USER = "user";
     private final static String EXTRA_SETTINGS = "settings";
     private final static String EXTRA_CALL = "call";
@@ -59,12 +37,24 @@ public class ChatApplication extends android.app.Application {
     private final static String EXTRA_TAPE = "tape";
     private final static String EXTRA_PATH = "path";
     private final static String EXTRA_FLOAT = "float";
-
     private final static int EXTRA_RESOLUTION_DEFAULT = 1;
     private final static int EXTRA_RATE_DEFAULT = 2;
-
     private final static int EXTRA_FRAME_DEFAULT = 1;
     private final static int EXTRA_VOLUME_DEFAULT = 2;
+    private RtcEngine rtcEngine;
+    private MessageHandler messageHandler;
+    private boolean isInChannel;
+    private int channelTime;
+    private ArrayList<Record> recordsList = new ArrayList<Record>();
+    private SharedPreferences user;
+    private SharedPreferences settings;
+    private SharedPreferences call;
+    private SharedPreferences record;
+    private SharedPreferences.Editor userEditor;
+    private SharedPreferences.Editor settingsEditor;
+    private SharedPreferences.Editor callEditor;
+    private SharedPreferences.Editor recordEditor;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -94,6 +84,12 @@ public class ChatApplication extends android.app.Application {
 
     //----------------------------------------------------------------------------------------------
 
+    //get RtcEngine
+    public RtcEngine getRtcEngine() {
+
+        return rtcEngine;
+    }
+
     //create RtcEngine
     public void setRtcEngine(String vendorKey) {
 
@@ -102,12 +98,6 @@ public class ChatApplication extends android.app.Application {
         }
 
         rtcEngine = RtcEngine.create(getApplicationContext(), vendorKey, messageHandler);
-    }
-
-    //get RtcEngine
-    public RtcEngine getRtcEngine() {
-
-        return rtcEngine;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -135,25 +125,19 @@ public class ChatApplication extends android.app.Application {
 
     //----------------------------------------------------------------------------------------------
 
-    //set isInChannel
-    public void setIsInChannel(boolean isInChannel) {
-
-        this.isInChannel = isInChannel;
-    }
-
     //get isInChannel
     public boolean getIsInChannel() {
 
         return isInChannel;
     }
 
-    //----------------------------------------------------------------------------------------------
+    //set isInChannel
+    public void setIsInChannel(boolean isInChannel) {
 
-    //set channelTime
-    public void setChannelTime(int channelTime) {
-
-        this.channelTime = channelTime;
+        this.isInChannel = isInChannel;
     }
+
+    //----------------------------------------------------------------------------------------------
 
     //get isInChannel
     public int getChannelTime() {
@@ -161,7 +145,19 @@ public class ChatApplication extends android.app.Application {
         return channelTime;
     }
 
+    //set channelTime
+    public void setChannelTime(int channelTime) {
+
+        this.channelTime = channelTime;
+    }
+
     //----------------------------------------------------------------------------------------------
+
+    //get resolution
+    public int getResolution() {
+
+        return settings.getInt(EXTRA_RESOLUTION, EXTRA_RESOLUTION_DEFAULT);
+    }
 
     //set Resolution SharedPreference
     public void setResolution(int resolution) {
@@ -171,13 +167,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get resolution
-    public int getResolution() {
-
-        return settings.getInt(EXTRA_RESOLUTION, EXTRA_RESOLUTION_DEFAULT);
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get Rate
+    public int getRate() {
+
+        return settings.getInt(EXTRA_RATE, EXTRA_RATE_DEFAULT);
+    }
 
     //set Rate SharedPreference
     public void setRate(int rate) {
@@ -187,13 +183,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get Rate
-    public int getRate() {
-
-        return settings.getInt(EXTRA_RATE, EXTRA_RATE_DEFAULT);
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get Frame
+    public int getFrame() {
+
+        return settings.getInt(EXTRA_FRAME, EXTRA_FRAME_DEFAULT);
+    }
 
     //set Frame SharedPreference
     public void setFrame(int frame) {
@@ -203,13 +199,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get Frame
-    public int getFrame() {
-
-        return settings.getInt(EXTRA_FRAME, EXTRA_FRAME_DEFAULT);
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get Volume
+    public int getVolume() {
+
+        return settings.getInt(EXTRA_VOLUME, EXTRA_VOLUME_DEFAULT);
+    }
 
     //set Volume SharedPreference
     public void setVolume(int volume) {
@@ -219,13 +215,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get Volume
-    public int getVolume() {
-
-        return settings.getInt(EXTRA_VOLUME, EXTRA_VOLUME_DEFAULT);
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get tape
+    public boolean getTape() {
+
+        return settings.getBoolean(EXTRA_TAPE, false);
+    }
 
     //set Tape SharedPreference
     public void setTape(boolean isChecked) {
@@ -235,13 +231,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get tape
-    public boolean getTape() {
-
-        return settings.getBoolean(EXTRA_TAPE, false);
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get path
+    public String getPath() {
+
+        return settings.getString(EXTRA_PATH, getApplicationContext().getExternalFilesDir(null).toString());
+    }
 
     //set Path SharedPreference
     public void setPath(String path) {
@@ -251,13 +247,13 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.apply();
     }
 
-    //get path
-    public String getPath() {
-
-        return settings.getString(EXTRA_PATH, getApplicationContext().getExternalFilesDir(null).toString());
-    }
-
     //----------------------------------------------------------------------------------------------
+
+    //get float
+    public boolean getFloat() {
+
+        return settings.getBoolean(EXTRA_FLOAT, false);
+    }
 
     //set Float SharedPreference
     public void setFloat(boolean isChecked) {
@@ -265,12 +261,6 @@ public class ChatApplication extends android.app.Application {
         settingsEditor.putBoolean(EXTRA_FLOAT, isChecked);
 
         settingsEditor.apply();
-    }
-
-    //get float
-    public boolean getFloat() {
-
-        return settings.getBoolean(EXTRA_FLOAT, false);
     }
 
 
