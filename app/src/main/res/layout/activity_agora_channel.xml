@@ -285,10 +285,15 @@
             android:layout_above="@id/channel_bottom_actions_container"
             android:layout_below="@id/channel_top_actions_container">
 
-            <FrameLayout
+            <io.agora.sample.agora.camera.CameraSourcePreview
                 android:id="@+id/user_local_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
+                <io.agora.sample.agora.camera.GraphicOverlay
+                    android:id="@+id/faceOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </io.agora.sample.agora.camera.CameraSourcePreview>
 
             <ImageView
                 android:id="@+id/user_local_voice_bg"
