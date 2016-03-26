@@ -43,6 +43,19 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="monkeyboom.orz"
+                    android:pathPrefix="/new_user" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+                <!-- Accepts URIs that begin with "example://gizmos”
+                <data android:scheme="monkeyboom"
+                      android:host="new_user" />-->
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.ChatActivity"
@@ -53,6 +66,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/app_name" >
+
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -81,10 +95,6 @@
         <activity
                 android:name="dropbox.UserActivity"
                 android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
                 android:name="dropbox.FilesActivity"

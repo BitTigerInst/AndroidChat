@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,9 +18,13 @@ import com.firebase.androidchat.ChatApplication;
 import com.firebase.androidchat.R;
 import com.firebase.androidchat.adapter.ChannelListAdapter;
 import com.firebase.androidchat.bean.Channel;
+import com.firebase.androidchat.util.SendMailSSLTask;
 import com.firebase.androidchat.util.Validator;
 import com.firebase.client.*;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,6 +72,13 @@ public class ChannelActivity extends AppCompatActivity {
         mFirebase = new Firebase(ChatApplication.FIREBASE_URL);
         mFirebaseUser = mFirebase.child("user").child(mUsername.replace(".",",")).child("channel");
         getChannelList();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_channel);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createChannel();
+            }
+        });
     }
 
     @Override
@@ -79,8 +91,68 @@ public class ChannelActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.add_channel:
-                createChannel();
+            case R.id.invite_email:
+                LayoutInflater li = LayoutInflater.from(this);
+                View promptsView = li.inflate(R.layout.username_alert_dialog, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        this);
+                alertDialogBuilder.setTitle(R.string.send_email_title);
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userName = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+
+                final EditText userPassword = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserPassword);
+                userPassword.setVisibility(View.GONE);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Send",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, int id) {
+
+
+                                    }
+                                })
+                        .setNegativeButton("Exit",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                });
+
+                // create alert dialog
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String html = null;
+                        try {
+                            html = convertStreamToString(getResources().openRawResource(R.raw.index));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        SendMailSSLTask sendMailTask = new SendMailSSLTask(ChannelActivity.this);
+                        try {
+                            mValidator.checkEmail(userName.getText().toString());
+                            sendMailTask.execute(getString(R.string.email_id), getString(R.string.email_password), userName.getText().toString(), "Welcome to MonkeyBOOM", "smtp.gmail.com", "465", html);
+                        }catch (Validator.EmptyEmailException e) {
+                            Toast.makeText(ChannelActivity.this,getString(R.string.error_field_required),Toast.LENGTH_SHORT).show();
+                            return;
+                        } catch (Validator.InvalidEmailException e) {
+                            Toast.makeText(ChannelActivity.this,getString(R.string.error_invalid_email),Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        alertDialog.dismiss();
+                    }
+                });
                 return true;
             case R.id.logout:
                 backToLogin();
@@ -90,13 +162,24 @@ public class ChannelActivity extends AppCompatActivity {
         }
     }
 
+    protected String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line+"\n");
+        }
+        is.close();
+        return sb.toString();
+    }
+
     private void createChannel() {
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.username_alert_dialog, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
-
+        alertDialogBuilder.setTitle(R.string.channel_title);
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
@@ -113,12 +196,12 @@ public class ChannelActivity extends AppCompatActivity {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, int id) {
-//                                if (mValidator.checkUrl(channelName.getText().toString())) {
+                                if (mValidator.checkUrl(channelName.getText().toString())) {
                                     setChannel(channelName.getText().toString());
                                     loginToChannel(channelName.getText().toString());
-//                                } else {
-//                                    Toast.makeText(ChannelActivity.this,"Channel name should onln contain 0-9 a-Z and '_' ",Toast.LENGTH_SHORT).show();
-//                                }
+                                } else {
+                                    Toast.makeText(ChannelActivity.this,"Channel name should onln contain 0-9 a-Z and '_' ",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -214,7 +297,7 @@ public class ChannelActivity extends AppCompatActivity {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
-
+        alertDialogBuilder.setTitle("User Login");
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 

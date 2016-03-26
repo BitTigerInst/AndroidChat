@@ -35,7 +35,7 @@
     <string name="error_101">Invalid vendor key, please login again.</string>
     <string name="error_confirm">Done</string>
 
-    <string name="channel_title">Room %s</string>
+    <string name="channel_title">Join or Create channel :</string>
     <string name="channel_mute">Mute</string>
     <string name="channel_loudspeaker">Speaker</string>
     <string name="channel_close">Camera Off</string>
@@ -103,9 +103,81 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="logout">Log Out</string>
+    <string name="email">Email</string>
 
     <string name="app_key">6kwktg77t41fn5x</string>
     <string name="title_activity_files">Files</string>
     <string name="share_file">Share File</string>
+    <string name="receive_email">Receive Email Intent</string>
+    <string name="email_string2" formatted = "false"> <![CDATA[<!DOCTYPE html>
+<html>
+<body>
+
+<p>
+<a href="monkeyboom://new_uswer" target="_top">Register Now</a>
+</p>
+
+</body>
+</html>
+]]>
+    </string>
+    <string name="email_string" formatted="false"><![CDATA[
+    <html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+<body>
+
+<div style="width:100%;" align="center">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" valign="top" style="background-color:#ff0066;" bgcolor="#ff0066;">
+        <table width="600" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="20" align="left" valign="top" bgcolor="#000000" style="background-color:#000000;">&nbsp;</td>
+            <td align="center" valign="top" bgcolor="#000000" style="background-color:#000000; color:#7b7b7b; font-family:Arial, Helvetica, sans-serif; font-size:14px;"><br>
+              <br>
+            <br>
+            <div style="color:#ff0066; font-family:Georgia, Times New Roman, Times, serif; font-size:24px;">
+            	MonkeyBOOM<br>
+                invites you to join our conversation.
+            </div><br>
+                <br>
+                <img src="images/flame.gif" width="117" height="163" style="display:block;"><br>
+                <br>
+<br>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td align="center" valign="middle"><img src="http://www.daftlydomestic.com/wp-content/uploads/2014/01/invite.jpg" alt="" width="544" height="5"></td>
+                  </tr>
+                  <tr>
+                    <td height="65" align="center" valign="middle"><div style="color:#FFFFFF; font-size:28px; font-family:Arial, Helvetica, sans-serif;"><p>
+                        <a href="monkeyboom://new_user" target="_top">Register Now</a>
+                    </p></div></td>
+                  </tr>
+                  <tr>
+                    <td align="center" valign="middle"><img src="images/divider.gif" alt="" width="544" height="5"></td>
+                  </tr>
+                </table>
+                <br>
+                <br>
+</td>
+            <td width="20" align="left" valign="top" bgcolor="#000000" style="background-color:#000000;">&nbsp;</td>
+          </tr>
+        </table>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+</body>
+</html>
+]]></string>
+    <string name="send_email_title">Your friend\'s Email Address:</string>
+    <string name="email_id"></string>
+    <string name="email_password"></string>
 
 </resources>

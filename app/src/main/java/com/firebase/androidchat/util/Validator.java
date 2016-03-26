@@ -56,7 +56,7 @@ public class Validator {
         if (null == url || url.length() < 1) {
             return false;
         }
-        Matcher matcher = EMAIL_PATTERN.matcher(url);
+        Matcher matcher = URL_PATTERN.matcher(url);
         if (!matcher.find()) {
             return false;
         }
